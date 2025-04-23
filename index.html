@@ -2,96 +2,136 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Reorder Steps</title>
+  <title>Rank the Outreach Sources</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Inter', sans-serif;
+      background-color: #F3F3F3;
+      padding: 40px;
+      color: #222766;
     }
+
+    h2 {
+      color: #222766;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    p.instructions {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
     #sortable {
-      list-style-type: none;
-      margin: 0;
+      list-style: none;
       padding: 0;
-      width: 60%;
+      margin: 0 auto;
+      max-width: 600px;
     }
+
     #sortable li {
-      margin: 10px 0;
-      padding: 12px;
       background-color: #D8D9E2;
       border: 1px solid #222766;
+      padding: 12px 18px;
+      margin: 8px 0;
+      font-size: 16px;
       cursor: move;
+      text-align: center; /* CENTER TEXT */
     }
+
     .correct {
       background-color: #829356;
       color: white;
     }
+
     .incorrect {
       background-color: #D89D33;
       color: black;
+    }
+
+    button {
+      background-color: #222766;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 6px;
+      margin-top: 20px;
+    }
+
+    #result {
+      margin-top: 15px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-<h2>Put the Steps in the Correct Order</h2>
-<ol id="sortable">
-  <li draggable="true">Defendant Directory in ActionStep</li>
-  <li draggable="true">Agent for Service of Process</li>
-  <li draggable="true">Defendant Status List</li>
-  <li draggable="true">Defendant’s Website and Email</li>
-  <li draggable="true">Intake Notes</li>
-</ol>
+  <h2>Rank the Outreach Sources</h2>
+  <p class="instructions">
+    Drag and drop the items below into the correct order, starting with the most reliable and preferred source at the top.
+  </p>
 
-<button onclick="checkOrder()">Check Order</button>
-<p id="result"></p>
+  <ol id="sortable">
+    <li draggable="true">Defendant Directory in ActionStep</li>
+    <li draggable="true">Agent for Service of Process</li>
+    <li draggable="true">Defendant Status List</li>
+    <li draggable="true">Defendant’s Website and Email</li>
+    <li draggable="true">Intake Notes</li>
+  </ol>
 
-<script>
-const list = document.getElementById('sortable');
-let draggedItem;
+  <button onclick="checkOrder()">Check Order</button>
+  <p id="result"></p>
 
-list.addEventListener('dragstart', (e) => {
-  draggedItem = e.target;
-});
+  <script>
+    const list = document.getElementById('sortable');
+    let draggedItem;
 
-list.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  const target = e.target;
-  if (target.tagName === 'LI' && target !== draggedItem) {
-    const bounding = target.getBoundingClientRect();
-    const offset = bounding.y + (bounding.height / 2);
-    if (e.clientY - offset > 0) {
-      target.after(draggedItem);
-    } else {
-      target.before(draggedItem);
+    list.addEventListener('dragstart', (e) => {
+      draggedItem = e.target;
+    });
+
+    list.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      const target = e.target;
+      if (target.tagName === 'LI' && target !== draggedItem) {
+        const bounding = target.getBoundingClientRect();
+        const offset = bounding.y + (bounding.height / 2);
+        if (e.clientY - offset > 0) {
+          target.after(draggedItem);
+        } else {
+          target.before(draggedItem);
+        }
+      }
+    });
+
+    function checkOrder() {
+      const correctOrder = [
+        "Defendant Status List",
+        "Defendant Directory in ActionStep",
+        "Intake Notes",
+        "Agent for Service of Process",
+        "Defendant’s Website and Email"
+      ];
+      const items = Array.from(list.getElementsByTagName('li'));
+      let correct = true;
+
+      items.forEach((item, index) => {
+        item.classList.remove('correct', 'incorrect');
+        if (item.textContent.trim() === correctOrder[index]) {
+          item.classList.add('correct');
+        } else {
+          item.classList.add('incorrect');
+          correct = false;
+        }
+      });
+
+      document.getElementById('result').textContent = correct
+        ? "Correct order!"
+        : "Some items are out of order. Try again.";
     }
-  }
-});
-
-function checkOrder() {
-  const correctOrder = [
-    "Defendant Status List",
-    "Defendant Directory in ActionStep",
-    "Intake Notes",
-    "Agent for Service of Process",
-    "Defendant’s Website and Email"
-  ];
-  const items = Array.from(list.getElementsByTagName('li'));
-  let correct = true;
-
-  items.forEach((item, index) => {
-    item.classList.remove('correct', 'incorrect');
-    if (item.textContent.trim() === correctOrder[index]) {
-      item.classList.add('correct');
-    } else {
-      item.classList.add('incorrect');
-      correct = false;
-    }
-  });
-
-  document.getElementById('result').textContent = correct
-    ? "Correct order!"
-    : "Some items are out of order. Try again.";
-}
-</script>
+  </script>
 
 </body>
 </html>
