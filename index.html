@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Reorder Steps</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    #sortable {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      width: 60%;
+    }
+    #sortable li {
+      margin: 10px 0;
+      padding: 12px;
+      background-color: #D8D9E2;
+      border: 1px solid #222766;
+      cursor: move;
+    }
+    .correct {
+      background-color: #829356;
+      color: white;
+    }
+    .incorrect {
+      background-color: #D89D33;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Put the Steps in the Correct Order</h2>
+<ol id="sortable">
+  <li draggable="true">Defendant Directory in ActionStep</li>
+  <li draggable="true">Agent for Service of Process</li>
+  <li draggable="true">Defendant Status List</li>
+  <li draggable="true">Defendant’s Website and Email</li>
+  <li draggable="true">Intake Notes</li>
+</ol>
+
+<button onclick="checkOrder()">Check Order</button>
+<p id="result"></p>
+
+<script>
+const list = document.getElementById('sortable');
+let draggedItem;
+
+list.addEventListener('dragstart', (e) => {
+  draggedItem = e.target;
+});
+
+list.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  const target = e.target;
+  if (target.tagName === 'LI' && target !== draggedItem) {
+    const bounding = target.getBoundingClientRect();
+    const offset = bounding.y + (bounding.height / 2);
+    if (e.clientY - offset > 0) {
+      target.after(draggedItem);
+    } else {
+      target.before(draggedItem);
+    }
+  }
+});
+
+function checkOrder() {
+  const correctOrder = [
+    "Defendant Status List",
+    "Defendant Directory in ActionStep",
+    "Intake Notes",
+    "Agent for Service of Process",
+    "Defendant’s Website and Email"
+  ];
+  const items = Array.from(list.getElementsByTagName('li'));
+  let correct = true;
+
+  items.forEach((item, index) => {
+    item.classList.remove('correct', 'incorrect');
+    if (item.textContent.trim() === correctOrder[index]) {
+      item.classList.add('correct');
+    } else {
+      item.classList.add('incorrect');
+      correct = false;
+    }
+  });
+
+  document.getElementById('result').textContent = correct
+    ? "Correct order!"
+    : "Some items are out of order. Try again.";
+}
+</script>
+
+</body>
+</html>
